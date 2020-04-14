@@ -1,7 +1,7 @@
 # Regression testing in Elm!
 
 You start a new job on an already existing product. The former and only developer of the solution hands you over the source code and runs to the exit, leaving you wondering what is happening...
-And then you look the code and damn! You didn't even know it was possible to write bad code in Elm, but here it is. The most obfuscated human-written code you've ever seen!
+And then you look at the code and damn! You didn't even know it was possible to write bad code in Elm, but here it is. The most obfuscated human-written code you've ever seen!
 
 The product won't survive if you can't refactor this to improve the code. Fortunately this is Elm so refactoring is easy, right? Wait a minute, what does this function do? And this one? And what the heck is this type representing? Nor the naming nor the types help you in any way to understand what is happening here.
 
@@ -9,7 +9,7 @@ You just know the current implementation works and that you should not break it.
 
 You've guessed it! **Regression testing**! How does it work?
 
-Well, you can take your program, generate an initial model, generate random messages, and save the final model. Without knowing exaxctly what happened, you now have a test that – given an initial model and some inputs – produces a specific output. Now, generate 100s of them, and save the inputs and the output to run them later again. Refactor the part of the code that you want, and once done run the tests again, comparing the final output with the previous final output. Are they the same for every test? Great, you have improved the code without breaking anything! Some tests don't pass? You've just changed the behaviour and should try to fix that mistake!
+Well, you can take your program, generate an initial model, generate random messages, send them to your update method and save the final model. Without knowing exactly what happened, you now have a test that – given an initial model and some inputs – produces a specific output. Now, generate 100s of them, and save the inputs and the output to run them later again. Refactor the part of the code that you want, and once done run the tests again, comparing the final output with the previous final output. Are they the same for every test? Great, you have improved the code without breaking anything! Some tests don't pass? You've just changed the behaviour and should try to fix that mistake!
 
 These generated tests are called a *test harness* and are here to help you improve the code. We can see four steps:
 
@@ -185,3 +185,28 @@ elm-test
 ```
 
 This requires that at some point you've set up [`elm-explorations/test`](https://package.elm-lang.org/packages/elm-explorations/test/latest/) for your project.
+
+## I want to refactor my model / my messages! 😱
+
+If you want to change the representation of your model or change the messages of your app, there is no problem, your test harness is still there!
+
+As the test data are stored as JSON, you can decode it as you want!
+
+Let's imagine that you want to change the model in the Counter example to allow adding more informations in the future:
+
+```elm
+-- Previous Model was simply an Int, we want to use a record containing that Int after our refactoring:
+
+type alias Model = { value : Int }
+```
+
+You can change your decoder to follow this change:
+
+```elm
+modelDecoder : Decoder Model
+modelDecoder = 
+    Decode.int
+    |> Decode.map Model
+```
+
+And run your tests with `elm-test`!
