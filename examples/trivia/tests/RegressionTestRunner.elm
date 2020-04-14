@@ -5,8 +5,10 @@ import RegressionTest.Runner as Runner
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (required)
 import Game
+import Test exposing (Test)
 
-suite = Runner.element {modelDecoder = modelDecoder, messageDecoder = messageDecoder, update = Game.update} testData
+suite : Test
+suite = Runner.update {modelDecoder = modelDecoder, messageDecoder = messageDecoder, update = Game.update} testData
 
 
 

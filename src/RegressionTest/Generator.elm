@@ -1,4 +1,4 @@
-module RegressionTest.Generator exposing (application, document, element, sandbox)
+module RegressionTest.Generator exposing (sandboxUpdate, update)
 
 import Elm.CodeGen as CodeGen exposing (Import)
 import Elm.Pretty as Pretty
@@ -53,7 +53,7 @@ type ExternalMessage
     | Error String
 
 
-sandbox :
+sandboxUpdate :
     { modelGenerator : Generator model
     , messageGenerator : Generator msg
     , update : msg -> model -> model
@@ -63,7 +63,7 @@ sandbox :
     , numberOfTests : Int
     }
     -> RegressionTestGeneratorProgram model msg
-sandbox configuration =
+sandboxUpdate configuration =
     let
         standardizedConfiguration =
             { modelGenerator = configuration.modelGenerator
@@ -75,10 +75,10 @@ sandbox configuration =
             , numberOfTests = configuration.numberOfTests
             }
     in
-    element standardizedConfiguration
+    update standardizedConfiguration
 
 
-element :
+update :
     { modelGenerator : Generator model
     , messageGenerator : Generator msg
     , update : msg -> model -> ( model, Cmd msg )
@@ -88,7 +88,7 @@ element :
     , numberOfTests : Int
     }
     -> RegressionTestGeneratorProgram model msg
-element configuration =
+update configuration =
     Platform.worker
         { init =
             \flags ->
@@ -105,37 +105,9 @@ element configuration =
                             |> configuration.outputPort
                             |> Cmd.map (always NoOp)
                         )
-        , update = update
+        , update = programUpdate
         , subscriptions = always Sub.none
         }
-
-
-document :
-    { modelGenerator : Generator model
-    , messageGenerator : Generator msg
-    , update : msg -> model -> ( model, Cmd msg )
-    , encodeModel : model -> Encode.Value
-    , encodeMessage : msg -> Encode.Value
-    , outputPort : Encode.Value -> Cmd msg
-    , numberOfTests : Int
-    }
-    -> RegressionTestGeneratorProgram model msg
-document =
-    element
-
-
-application :
-    { modelGenerator : Generator model
-    , messageGenerator : Generator msg
-    , update : msg -> model -> ( model, Cmd msg )
-    , encodeModel : model -> Encode.Value
-    , encodeMessage : msg -> Encode.Value
-    , outputPort : Encode.Value -> Cmd msg
-    , numberOfTests : Int
-    }
-    -> RegressionTestGeneratorProgram model msg
-application =
-    element
 
 
 externalConfigurationDecoder : Decoder ExternalConfiguration
@@ -157,8 +129,8 @@ generateModelAndMessages configuration =
         |> Random.generate ModelAndMessagesGenerated
 
 
-update : Msg model msg -> Model model msg -> ( Model model msg, Cmd (Msg model msg) )
-update msg (Model model) =
+programUpdate : Msg model msg -> Model model msg -> ( Model model msg, Cmd (Msg model msg) )
+programUpdate msg (Model model) =
     case ( model.state, msg ) of
         ( Generating externalConfiguration, ModelAndMessagesGenerated inputsList ) ->
             let

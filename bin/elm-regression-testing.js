@@ -29,6 +29,10 @@ program
                 moduleName: options.module || extractModuleFromOutputPath(options.output)
             }
         });
+        if (!app.ports || !app.ports.outputPort) {
+            testsGenerationSpinner.fail("Unable to find the `outputPort` port. You have to expose one with the proper name: port outputPort : Encode.Value -> Cmd msg");
+            return;
+        }
         app.ports.outputPort.subscribe((message) => {
             if (message.type === "error") {
                 testsGenerationSpinner.fail("Error when generating tests: " + message.error);
@@ -58,6 +62,9 @@ function extractModuleFromOutputPath(outputPath) {
         const isFirstLetterUppercase = firstLetter >= 'A' && firstLetter <= 'Z';
         if (isFirstLetterUppercase) {
             moduleNameParts.push(parts[i]);
+        }
+        else {
+            break;
         }
     }
     return moduleNameParts.join('.');

@@ -10,7 +10,7 @@ port outputPort : Encode.Value -> Cmd msg
 
 
 main =
-    RegressionTest.element
+    RegressionTest.update
         { modelGenerator = initialModelGenerator
         , messageGenerator = messageGenerator
         , update = update
