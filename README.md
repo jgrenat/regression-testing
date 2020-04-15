@@ -1,5 +1,7 @@
 # Regression testing in Elm!
 
+**Refactor that obscure piece of code that nobody can understand anymore!**
+
 You start a new job on an already existing product. The former and only developer of the solution hands you over the source code and runs to the exit, leaving you wondering what is happening...
 And then you look at the code and damn! You didn't even know it was possible to write bad code in Elm, but here it is. The most obfuscated human-written code you've ever seen!
 
@@ -7,7 +9,17 @@ The product won't survive if you can't refactor this to improve the code. Fortun
 
 You just know the current implementation works and that you should not break it. You have to refactor without altering a behaviour you don't know. How to do that?
 
-You've guessed it! **Regression testing**! How does it work?
+You've guessed it! **Regression testing**!
+
+## When do I need regression testing?
+
+When you need to refactor a code without knowing exactly what this code does. This could be because it's not your code and you do not have the specifications, or maybe it is because the code has grown more and more complex overtime and nobody knows everything anymore. The only thing you now is that the current implementation is considered correct and you do not want to break it while refactoring it.
+
+In fact, even if there are bugs in this piece of code, you don't want to fix them during this refactoring: this is something that you will address later, once the code is easier to work with: *[make the change easy [...] then make the easy change](https://twitter.com/kentbeck/status/250733358307500032?lang=fr) (piece of wisdom from Kent Beck).* [Discover more on this thanks to Dillon Kearns](https://medium.com/@dillonkearns/moving-faster-with-tiny-steps-in-elm-2e6a269e4efc).
+
+If you know well what your code is supposed to do, unit tests or fuzz tests through [`elm-test`](https://package.elm-lang.org/packages/elm-explorations/test/latest/) directly may suit you better.    
+
+## How does it work?
 
 Well, you can take your program, generate an initial model, generate random messages, send them to your update method and save the final model. Without knowing exactly what happened, you now have a test that – given an initial model and some inputs – produces a specific output. Now, generate 100s of them, and save the inputs and the output to run them later again. Refactor the part of the code that you want, and once done run the tests again, comparing the final output with the previous final output. Are they the same for every test? Great, you have improved the code without breaking anything! Some tests don't pass? You've just changed the behaviour and should try to fix that mistake!
 
@@ -39,13 +51,10 @@ This package will help you generate tests, but it needs a few inputs from you:
    Or if your initial model is always the same, you can use a constant generator:
 
    ```elm
-   import Counter exposing (Model)
-   import Random exposing (Generator)
-   
    modelGenerator : Generator Model
-   modelGenerator = Random.contant 0
+   modelGenerator = Random.constant 0
    ```   
- - We need to know how to generate a message for your application:
+ - Define how to generate a message for your application:
    ```elm
    import Counter exposing (Msg(..))
    import Random exposing (Generator)
@@ -55,7 +64,7 @@ This package will help you generate tests, but it needs a few inputs from you:
    
    -- If some messages should be more frequent than others, you can use Random.weighted.
    ```
- - We need to know how to encode your model and your messages into JSON to save them, using the [`elm/json` package](https://package.elm-lang.org/packages/elm/json/latest/). 
+ - Define how encode your model and your messages into JSON to save them, using the [`elm/json` package](https://package.elm-lang.org/packages/elm/json/latest/). 
    ```elm
    import Counter exposing (Model, Msg(..))
    import Json.Encode as Encode
@@ -73,7 +82,7 @@ This package will help you generate tests, but it needs a few inputs from you:
    
    -- You can find more complex examples in the "examples" folder
    ```
- - We need a port to get back the generated tests:
+ - Declare a port to get back the generated tests:
    ```elm
    port module RegressionTestGenerator exposing (main)
    import Json.Encode as Encode
