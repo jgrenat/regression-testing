@@ -1,11 +1,30 @@
-module RegressionTest.Runner exposing (TestData, application, document, element, sandbox)
+module RegressionTest.Runner exposing
+    ( UpdateFunctionTestData
+    , sandboxUpdate, update
+    )
+
+{-| Exposes a bunch of methods to run tests based on generated test data.
+
+
+# Definition
+
+@docs UpdateFunctionTestData
+
+
+# Test a program
+
+@docs sandboxUpdate, update
+
+-}
 
 import Expect exposing (Expectation)
 import Json.Decode as Decode
 import Test exposing (Test, describe, test)
 
 
-type alias TestData =
+{-| Test data to test a `update` function
+-}
+type alias UpdateFunctionTestData =
     { initialModel : String
     , messages : List String
     , expectedOutput : String
@@ -23,14 +42,17 @@ type alias ParsedTestData model msg =
     { initialModel : model, messages : List msg, expectedOutput : model }
 
 
-sandbox :
+{-| Test the `update` function of a `sandbox` program, following the form `msg -> model -> model`, then compare the
+results to the saved results.
+-}
+sandboxUpdate :
     { modelDecoder : Decode.Decoder model
     , messageDecoder : Decode.Decoder msg
     , update : msg -> model -> model
     }
-    -> List TestData
+    -> List UpdateFunctionTestData
     -> Test
-sandbox configuration testData =
+sandboxUpdate configuration testData =
     let
         standardizedConfiguration =
             { modelDecoder = configuration.modelDecoder
@@ -38,17 +60,21 @@ sandbox configuration testData =
             , update = \msg model -> ( configuration.update msg model, Cmd.none )
             }
     in
-    element standardizedConfiguration testData
+    update standardizedConfiguration testData
 
 
-element :
+{-| Test a regular `update` function, following the form `msg -> model -> (model, Cmd msg)`, then compare the
+results to the saved results.
+The command part is not tested, only the model is kept.
+-}
+update :
     { modelDecoder : Decode.Decoder model
     , messageDecoder : Decode.Decoder msg
     , update : msg -> model -> ( model, Cmd msg )
     }
-    -> List TestData
+    -> List UpdateFunctionTestData
     -> Test
-element configuration testData =
+update configuration testData =
     List.map (decodeTestData configuration) testData
         |> List.indexedMap
             (\index result ->
@@ -67,28 +93,6 @@ element configuration testData =
         |> describe "Tests generated from previous program behaviour"
 
 
-document :
-    { modelDecoder : Decode.Decoder model
-    , messageDecoder : Decode.Decoder msg
-    , update : msg -> model -> ( model, Cmd msg )
-    }
-    -> List TestData
-    -> Test
-document =
-    element
-
-
-application :
-    { modelDecoder : Decode.Decoder model
-    , messageDecoder : Decode.Decoder msg
-    , update : msg -> model -> ( model, Cmd msg )
-    }
-    -> List TestData
-    -> Test
-application =
-    element
-
-
 toExpectation : Configuration model msg -> ParsedTestData model msg -> Expectation
 toExpectation configuration parsedTestData =
     let
@@ -101,7 +105,7 @@ toExpectation configuration parsedTestData =
     Expect.equal parsedTestData.expectedOutput finalModel
 
 
-decodeTestData : Configuration model msg -> TestData -> Result Decode.Error (ParsedTestData model msg)
+decodeTestData : Configuration model msg -> UpdateFunctionTestData -> Result Decode.Error (ParsedTestData model msg)
 decodeTestData configuration data =
     Result.map3
         ParsedTestData

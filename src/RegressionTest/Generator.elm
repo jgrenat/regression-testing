@@ -1,4 +1,21 @@
-module RegressionTest.Generator exposing (sandboxUpdate, update)
+module RegressionTest.Generator exposing
+    ( RegressionTestGeneratorProgram
+    , sandboxUpdate, update
+    )
+
+{-| Exposes a bunch of methods to generate test data for regression testing.
+
+
+# Definition
+
+@docs RegressionTestGeneratorProgram
+
+
+# Test a program
+
+@docs sandboxUpdate, update
+
+-}
 
 import Elm.CodeGen as CodeGen exposing (Import)
 import Elm.Pretty as Pretty
@@ -26,6 +43,8 @@ type alias ExternalConfiguration =
     { moduleName : String }
 
 
+{-| Program used to generate test data for regression tests.
+-}
 type alias RegressionTestGeneratorProgram model msg =
     Program Flags (Model model msg) (Msg model msg)
 
@@ -53,6 +72,8 @@ type ExternalMessage
     | Error String
 
 
+{-| Generate test data for a sandboxProgram, with the `update` function following the form `msg -> model -> model`.
+-}
 sandboxUpdate :
     { modelGenerator : Generator model
     , messageGenerator : Generator msg
@@ -78,6 +99,8 @@ sandboxUpdate configuration =
     update standardizedConfiguration
 
 
+{-| Generate test data for a standard program, with the `update` function following the form `msg -> model -> (model, Cmd msg)`.
+-}
 update :
     { modelGenerator : Generator model
     , messageGenerator : Generator msg
@@ -168,17 +191,18 @@ toFile configuration externalConfiguration testDataList =
             List.map (toTestData configuration) testDataList
                 |> CodeGen.list
                 |> CodeGen.valDecl Nothing
-                    (Just (CodeGen.listAnn (CodeGen.typeVar "TestData")))
+                    (Just (CodeGen.listAnn (CodeGen.typeVar "UpdateFunctionTestData")))
                     "testData"
 
-        testDataType =
-            CodeGen.aliasDecl Nothing "TestData" [] (CodeGen.recordAnn [ ( "initialModel", CodeGen.stringAnn ), ( "messages", CodeGen.listAnn CodeGen.stringAnn ), ( "expectedOutput", CodeGen.stringAnn ) ])
+        updateFunctionTestDataImport =
+            [ CodeGen.typeOrAliasExpose "UpdateFunctionTestData" ]
+                |> CodeGen.exposeExplicit
+                |> Just
+                |> CodeGen.importStmt [ "RegressionTest", "Runner" ] Nothing
     in
     CodeGen.file (CodeGen.normalModule [ externalConfiguration.moduleName ] [])
-        []
-        [ testDataType
-        , testData
-        ]
+        [ updateFunctionTestDataImport ]
+        [ testData ]
         Nothing
         |> Pretty.pretty 120
 

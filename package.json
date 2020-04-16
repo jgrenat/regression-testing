@@ -1,5 +1,5 @@
 {
-  "name": "elm-regression-testing",
+  "name": "@jgrenat/elm-regression-testing",
   "version": "1.0.0",
   "description": "Regression Testing in Elm!",
   "main": "bin/elm-regression-testing",
@@ -14,6 +14,9 @@
   "keywords": ["cli", "regression testing", "test"],
   "author": "Jordane Grenat (https://grenat.eu)",
   "license": "BSD-3-Clause",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "commander": "^5.0.0",
     "fs-extra": "^9.0.0",
