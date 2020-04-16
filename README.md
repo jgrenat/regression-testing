@@ -1,8 +1,10 @@
-# Regression testing in Elm!
+<h1 align="center">♻️ Elm regression testing ♻️</h1>
 
-**Refactor that obscure piece of code that nobody can understand anymore!**
+> Refactor that obscure piece of code that nobody can understand anymore!
 
-You start a new job on an already existing product. The former and only developer of the solution hands you over the source code and runs to the exit, leaving you wondering what is happening...
+## What is it?
+
+Imagine you start a new job on an already existing product. The former and only developer of the solution hands you over the source code and runs to the exit, leaving you wondering what is happening...
 And then you look at the code and damn! You didn't even know it was possible to write bad code in Elm, but here it is. The most obfuscated human-written code you've ever seen!
 
 The product won't survive if you can't refactor this to improve the code. Fortunately this is Elm so refactoring is easy, right? Wait a minute, what does this function do? And this one? And what the heck is this type representing? Nor the naming nor the types help you in any way to understand what is happening here.
