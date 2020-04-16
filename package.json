@@ -1,15 +1,19 @@
 {
   "name": "elm-regression-testing",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Regression Testing in Elm!",
+  "main": "bin/elm-regression-testing",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --outDir bin"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "bin": {
+    "elm-regression-testing": "bin/elm-regression-testing.js"
+  },
+  "files": ["bin/*"],
+  "keywords": ["cli", "regression testing", "test"],
+  "author": "Jordane Grenat (https://grenat.eu)",
+  "license": "BSD-3-Clause",
   "dependencies": {
     "commander": "^5.0.0",
     "fs-extra": "^9.0.0",

@@ -120,19 +120,19 @@ main = RegressionTest.Generator.sandboxUpdate
 We're going to use the node module to generate this one, so you'll need to have [NodeJS](https://nodejs.org/en/) installed. Then, you can install the tool:
 
 ```bash
-npm install --global jgrenat/regression-test
+npm install --global @jgrenat/elm-regression-testing
 ```
 
 To generate the tests, go to the root of your project, assuming that the `TestGenerator` file is in the `tests` directory, run this command:
 
 ```bash
-regression-test ./tests/RegressionTestGenerator.elm
+elm-regression-testing ./tests/RegressionTestGenerator.elm
 ```
 
 This will generate the file `./tests/GeneratedRegressionTestData.elm` containing the tests data. If you want to change the path or the name of the file, you can use the `--output` option:
 
 ```bash
-regression-test ./tests/RegressionTestGenerator.elm --output=./tests/CustomFileName.elm
+elm-regression-testing ./tests/RegressionTestGenerator.elm --output=./tests/CustomFileName.elm
 ```
 
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Command } from "commander";
 import * as ora from "ora";
 import { compile } from "node-elm-compiler";
