@@ -1,4 +1,4 @@
-<h1 align="center">♻️ Elm regression testing ♻️</h1>
+<h1 align="center">♻️ Elm Regression Testing ♻️</h1>
 
 > Refactor that obscure piece of code that nobody can understand anymore!
 
@@ -15,13 +15,15 @@ You've guessed it! **Regression testing**!
 
 ## When do I need regression testing?
 
-When you need to refactor a code without knowing exactly what this code does. This could be because it's not your code and you do not have the specifications, or maybe it is because the code has grown more and more complex overtime and nobody knows everything anymore. The only thing you now is that the current implementation is considered correct and you do not want to break it while refactoring it.
+When you need to refactor a code without knowing exactly what this code does. This could be because it's not your code and you do not have the specifications, or maybe because the code has grown more and more complex overtime and nobody knows everything anymore. The only thing you now is that the current implementation is considered correct and you do not want to break it while refactoring it.
 
 In fact, even if there are bugs in this piece of code, you don't want to fix them during this refactoring: this is something that you will address later, once the code is easier to work with: *[make the change easy [...] then make the easy change](https://twitter.com/kentbeck/status/250733358307500032?lang=fr) (piece of wisdom from Kent Beck).* [Discover more on this thanks to Dillon Kearns](https://medium.com/@dillonkearns/moving-faster-with-tiny-steps-in-elm-2e6a269e4efc).
 
 If you know well what your code is supposed to do, unit tests or fuzz tests through [`elm-test`](https://package.elm-lang.org/packages/elm-explorations/test/latest/) directly may suit you better.    
 
 ## How does it work?
+
+<img src="./regression-testing.svg" style="max-width: 100%;" alt="" role="presentation">
 
 Well, you can take your program, generate an initial model, generate random messages, send them to your update method and save the final model. Without knowing exactly what happened, you now have a test that – given an initial model and some inputs – produces a specific output. Now, generate 100s of them, and save the inputs and the output to run them later again. Refactor the part of the code that you want, and once done run the tests again, comparing the final output with the previous final output. Are they the same for every test? Great, you have improved the code without breaking anything! Some tests don't pass? You've just changed the behaviour and should try to fix that mistake!
 
