@@ -23,7 +23,7 @@ If you know well what your code is supposed to do, unit tests or fuzz tests thro
 
 ## How does it work?
 
-![Picture showing the four steps described below](https://github.com/jgrenat/regression-testing/raw/master/regression-testing.svg)
+![Picture showing the four steps described below](https://github.com/jgrenat/regression-testing/raw/master/regression-testing.svg?sanitize=true)
 
 Well, you can take your program, generate an initial model, generate random messages, send them to your update method and save the final model. Without knowing exactly what happened, you now have a test that – given an initial model and some inputs – produces a specific output. Now, generate 100s of them, and save the inputs and the output to run them later again. Refactor the part of the code that you want, and once done run the tests again, comparing the final output with the previous final output. Are they the same for every test? Great, you have improved the code without breaking anything! Some tests don't pass? You've just changed the behaviour and should try to fix that mistake!
 
