@@ -3,7 +3,7 @@
     "name": "jgrenat/regression-testing",
     "summary": "A tool to generate regression tests for your Elm application",
     "license": "BSD-3-Clause",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "exposed-modules": [
         "RegressionTest.Generator",
         "RegressionTest.Runner"
