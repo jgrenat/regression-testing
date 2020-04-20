@@ -1,6 +1,6 @@
 {
   "name": "@jgrenat/elm-regression-testing",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Regression Testing in Elm!",
   "main": "bin/elm-regression-testing",
   "scripts": {
