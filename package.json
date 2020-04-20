@@ -10,8 +10,14 @@
   "bin": {
     "elm-regression-testing": "bin/elm-regression-testing.js"
   },
-  "files": ["bin/*"],
-  "keywords": ["cli", "regression testing", "test"],
+  "files": [
+    "bin/*"
+  ],
+  "keywords": [
+    "cli",
+    "regression testing",
+    "test"
+  ],
   "author": "Jordane Grenat (https://grenat.eu)",
   "license": "BSD-3-Clause",
   "publishConfig": {
@@ -22,7 +28,8 @@
     "fs-extra": "^9.0.0",
     "node-elm-compiler": "^5.0.4",
     "ora": "^4.0.3",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "tmp": "^0.1.0"
   },
   "devDependencies": {
     "@types/node": "^13.11.1",
